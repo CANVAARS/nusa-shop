@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="app.title">Portal Marketplace — Nusacoin Theme</title>
+    
+    <!-- FONTS NUSACOIN SYSTEM -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ============================================================
+           NUSACOIN — DESIGN TOKENS INTEGRATION
+           ============================================================ */
+        :root {
+            --nux-green: #27ae60;
+            --nux-green-dark: #1e8449;
+            --nux-green-deep: #0f3d26;
+            --gold: #d4a017;
+            --danger: #e74c3c;
+            --danger-dark: #c0392b;
+
+            --bg: #f7f5ef;
+            --surface: #ffffff;
+            --surface-2: #f0efe6;
+            --ink: #16231c;
+            --ink-soft: #56645c;
+            --border: #e3ded0;
+            --shadow: 0 10px 30px -12px rgba(15,61,38,0.18);
+
+            --font-display: 'Sora', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --radius: 14px;
+            --transition: 0.35s cubic-bezier(.22,.9,.32,1.24);
+        }
+
+        html[data-theme="dark"] {
+            --bg: #0d1712;
+            --surface: #142219;
+            --surface-2: #182a1e;
+            --ink: #eef3ec;
+            --ink-soft: #9db3a4;
+            --border: #24382c;
+            --shadow: 0 10px 34px -10px rgba(0,0,0,0.55);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.65;
+            padding: 24px;
+            transition: background var(--transition), color var(--transition);
+        }
+        h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.01em; }
+        .mono { font-family: var(--font-mono); }
+
+        /* HEADER & TOP BAR */
+        .top-bar {
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-link {
+            color: var(--nux-green);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: var(--nux-green-dark); }
+
+        .nav-tools { display: flex; align-items: center; gap: 8px; }
+        .tool-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: var(--surface-2); border: 1px solid var(--border); color: var(--ink);
+            padding: 6px 12px; border-radius: 9px; font-size: 0.78rem; font-weight: 700; cursor: pointer;
+            font-family: var(--font-mono); transition: border-color 0.2s, color 0.2s, transform 0.2s;
+        }
+        .tool-btn:hover { border-color: var(--nux-green); color: var(--nux-green); transform: translateY(-1px); }
+
+        /* CARDS & CONTAINERS */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 34px;
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            margin: 0 auto 24px auto;
+            position: relative;
+            overflow: hidden;
+            transition: background var(--transition), border-color var(--transition);
+        }
+        
+        /* MOTIF SIGNATURE BLOCK NUSACOIN */
+        .card::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: repeating-linear-gradient(90deg, var(--nux-green) 0 14px, transparent 14px 22px);
+        }
+
+        .eyebrow {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--nux-green);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .eyebrow::before {
+            content: ""; width: 7px; height: 7px; border-radius: 50%;
+            background: var(--nux-green); box-shadow: 0 0 0 3px rgba(39,174,96,0.18);
+        }
+
+        /* INPUTS & FORMS */
+        .form-group { margin-bottom: 18px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--ink);
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--surface-2);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-size: 0.92rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--nux-green);
+        }
+
+        /* BUTTONS */
+        button {
+            width: 100%;
+            padding: 13px 26px;
+            border-radius: 9px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            background: var(--nux-green);
+            color: #fff;
+            box-shadow: 0 8px 20px -6px rgba(39,174,96,0.55);
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            margin-top: 10px;
+        }
+        button:hover { background: var(--nux-green-dark); transform: translateY(-2px); }
+        button:disabled { background: var(--ink-soft); cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.6; }
+        
+        .danger-btn { background: var(--danger); box-shadow: 0 8px 20px -6px rgba(231,76,60,0.4); }
+        .danger-btn:hover { background: var(--danger-dark); }
+        
+        .success-btn { background: var(--nux-green); }
+
+        #dashboardSection, #adminSection { display: none; }
+        
+        .role-badge {
+            font-family: var(--font-mono);
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--surface-2);
+            color: var(--nux-green);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="index.html" class="nav-link">
+            <i class="fas fa-arrow-left"></i> <span data-i18n="nav.back">Kembali ke Beranda Toko</span>
+        </a>
+        <div class="nav-tools">
+            <button class="tool-btn" id="lang-toggle" aria-label="Ganti Bahasa">ID / EN</button>
+            <button class="tool-btn" id="theme-toggle" aria-label="Ganti Tema"><i class="fas fa-moon"></i></button>
+        </div>
+    </div>
+
+    <!-- ================= PORTAL AUTENTIKASI ================= -->
+    <div id="loginSection" class="card">
+        <span class="eyebrow" data-i18n="login.eyebrow">PORTAL AUTENTIKASI</span>
+        <h2 style="margin-bottom:6px;" data-i18n="login.title">Login Portal</h2>
+        <p style="color:var(--ink-soft); font-size:0.9rem; margin-bottom: 20px;" data-i18n="login.desc">Masukkan akun Admin atau Seller Anda.</p>
+        
+        <div class="form-group">
+            <label data-i18n="login.userlabel">Username:</label>
+            <input type="text" id="loginUser" placeholder="Username..." required>
+        </div>
+        <div class="form-group">
+            <label data-i18n="login.passlabel">Password:</label>
+            <input type="password" id="loginPass" placeholder="Password..." required>
+        </div>
+        <button id="btnLogin" onclick="prosesLogin()"><i class="fas fa-sign-in-alt"></i> <span data-i18n="login.btn">Masuk ke Sistem</span></button>
+    </div>
+
+    <!-- ================= MANAJEMEN TOKO (DASHBOARD) ================= -->
+    <div id="dashboardSection" class="card">
+        <span class="eyebrow" data-i18n="dash.eyebrow">MANAJEMEN TOKO</span>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h2 data-i18n="dash.title">Dashboard Toko</h2>
+            <span id="userBadge" class="role-badge">Role</span>
+        </div>
+        <p style="color:var(--ink-soft); font-size:0.92rem;"><span data-i18n="dash.welcome">Selamat datang,</span> <strong id="displayUsername" style="color:var(--ink);">User</strong>! <span data-i18n="dash.welcomeDesc">Anda bisa memposting barang baru di bawah ini.</span></p>
+        
+        <hr style="border:0; border-top:1px solid var(--border); margin:24px 0;">
+        
+        <h3 style="font-size:1.1rem; margin-bottom:16px;" data-i18n="dash.postTitle">Post Dagangan Baru</h3>
+        <div class="form-group">
+            <label data-i18n="dash.prodNama">Nama Barang:</label>
+            <input type="text" id="prodNama" required>
+        </div>
+        <div class="form-group">
+            <label data-i18n="dash.prodHarga">Harga Produk (Rp):</label>
+            <input type="number" id="prodHarga" required>
+        </div>
+        <div class="form-group">
+            <label data-i18n="dash.prodKet">Deskripsi/Keterangan:</label>
+            <textarea id="prodKeterangan" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label data-i18n="dash.prodKontak">No. WhatsApp Pembeli (Contoh: 628123456):</label>
+            <input type="text" id="prodKontak" required>
+        </div>
+        <div class="form-group">
+            <label data-i18n="dash.prodFoto">Foto Produk:</label>
+            <input type="file" id="prodFoto" accept="image/*" required>
+        </div>
+        <button id="btnPost" class="success-btn" onclick="prosesUploadProduk()"><i class="fas fa-paper-plane"></i> <span data-i18n="dash.btnPost">Terbitkan Produk</span></button>
+        <button class="danger-btn" style="margin-top: 15px;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span data-i18n="dash.btnLogout">Keluar / Logout</span></button>
+    </div>
+
+    <!-- ================= HAK AKSES UTAMA (PANEL ADMIN) ================= -->
+    <div id="adminSection" class="card" style="border-top: 4px solid var(--nux-green);">
+        <span class="eyebrow" data-i18n="admin.eyebrow">HAK AKSES UTAMA</span>
+        <h2 style="margin-bottom:6px;" data-i18n="admin.title">🛠️ Panel Kontrol Admin</h2>
+        <p style="color:var(--ink-soft); font-size:0.9rem;" data-i18n="admin.desc">Fitur ini hanya muncul karena Anda login sebagai Admin.</p>
+        
+        <hr style="border:0; border-top:1px solid var(--border); margin:20px 0;">
+        
+        <h3 style="font-size:1.05rem; margin-bottom:14px;" data-i18n="admin.newUserTitle">Tambah Akun Seller/Admin Baru</h3>
+        <div class="form-group">
+            <label data-i18n="admin.userLabel">Username Baru:</label>
+            <input type="text" id="newUsername" placeholder="Contoh: toko_baju">
+        </div>
+        <div class="form-group">
+            <label data-i18n="admin.passLabel">Password Baru:</label>
+            <input type="password" id="newPassword" placeholder="Password akun baru...">
+        </div>
+        <div class="form-group">
+            <label data-i18n="admin.roleLabel">Pilih Role Hak Akses:</label>
+            <select id="newRole">
+                <option value="seller" data-i18n="admin.optSeller">Seller (Hanya bisa upload produk)</option>
+                <option value="admin" data-i18n="admin.optAdmin">Admin (Kontrol penuh sistem)</option>
+            </select>
+        </div>
+        <button id="btnTambahUser" onclick="adminTambahUser()"><i class="fas fa-user-plus"></i> <span data-i18n="admin.btnCreate">Daftarkan Akun Baru</span></button>
+    </div>
+
+    <script>
+        /* ---------------- KAMUS BAHASA (ID / EN) ---------------- */
+        const dict = {
+            id: {
+                "app.title": "Portal Marketplace — Nusacoin Theme",
+                "nav.back": "Kembali ke Beranda Toko",
+                "login.eyebrow": "PORTAL AUTENTIKASI",
+                "login.title": "Login Portal",
+                "login.desc": "Masukkan akun Admin atau Seller Anda.",
+                "login.userlabel": "Username:",
+                "login.passlabel": "Password:",
+                "login.btn": "Masuk ke Sistem",
+                "dash.eyebrow": "MANAJEMEN TOKO",
+                "dash.title": "Dashboard Toko",
+                "dash.welcome": "Selamat datang,",
+                "dash.welcomeDesc": "Anda bisa memposting barang baru di bawah ini.",
+                "dash.postTitle": "Post Dagangan Baru",
+                "dash.prodNama": "Nama Barang:",
+                "dash.prodHarga": "Harga Produk (Rp):",
+                "dash.prodKet": "Deskripsi/Keterangan:",
+                "dash.prodKontak": "No. WhatsApp Pembeli (Contoh: 628123456):",
+                "dash.prodFoto": "Foto Produk:",
+                "dash.btnPost": "Terbitkan Produk",
+                "dash.btnLogout": "Keluar / Logout",
+                "admin.eyebrow": "HAK AKSES UTAMA",
+                "admin.title": "🛠️ Panel Kontrol Admin",
+                "admin.desc": "Fitur ini hanya muncul karena Anda login sebagai Admin.",
+                "admin.newUserTitle": "Tambah Akun Seller/Admin Baru",
+                "admin.userLabel": "Username Baru:",
+                "admin.passLabel": "Password Baru:",
+                "admin.roleLabel": "Pilih Role Hak Akses:",
+                "admin.optSeller": "Seller (Hanya bisa upload produk)",
+                "admin.optAdmin": "Admin (Kontrol penuh sistem)",
+                "admin.btnCreate": "Daftarkan Akun Baru"
+            },
+            en: {
+                "app.title": "Marketplace Portal — Nusacoin Theme",
+                "nav.back": "Back to Store Home",
+                "login.eyebrow": "AUTHENTICATION PORTAL",
+                "login.title": "Portal Login",
+                "login.desc": "Enter your Admin or Seller account details.",
+                "login.userlabel": "Username:",
+                "login.passlabel": "Password:",
+                "login.btn": "Sign In to System",
+                "dash.eyebrow": "STORE MANAGEMENT",
+                "dash.title": "Store Dashboard",
+                "dash.welcome": "Welcome,",
+                "dash.welcomeDesc": "You can post new items below.",
+                "dash.postTitle": "Post New Product",
+                "dash.prodNama": "Item Name:",
+                "dash.prodHarga": "Product Price:",
+                "dash.prodKet": "Description/Details:",
+                "dash.prodKontak": "WhatsApp Number (e.g., 628123456):",
+                "dash.prodFoto": "Product Photo:",
+                "dash.btnPost": "Publish Product",
+                "dash.btnLogout": "Sign Out / Logout",
+                "admin.eyebrow": "PRIMARY ACCESS PERMISSION",
+                "admin.title": "🛠️ Admin Control Panel",
+                "admin.desc": "This section is visible because you are logged in as Admin.",
+                "admin.newUserTitle": "Add New Seller/Admin Account",
+                "admin.userLabel": "New Username:",
+                "admin.passLabel": "New Password:",
+                "admin.roleLabel": "Select Access Role:",
+                "admin.optSeller": "Seller (Can only upload products)",
+                "admin.optAdmin": "Admin (Full system control)",
+                "admin.btnCreate": "Register New Account"
+            }
+        };
+
+        let currentLang = 'id';
+        let currentTheme = 'light';
+
+        // URL RE-DEPLOY TERBARU DARI INPUT ANDA
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxPHJ76g9wcHkChMJvvOrcpNglILLehIsgjV0tlOohunXm03kGVPM83b9Ax2Lkqu9EhxQ/exec"; 
+        
+        let sessionUser = "";
+        let sessionPasswordHash = "";
+        let sessionRole = "";
+
+        /* ---------------- MANAJEMEN TEMA (DARK / LIGHT) ---------------- */
+        const root = document.documentElement;
+        const themeBtn = document.getElementById('theme-toggle');
+
+        function applyTheme(t) {
+            currentTheme = t;
+            root.setAttribute('data-theme', t);
+            themeBtn.innerHTML = t === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
+        themeBtn.addEventListener('click', () => {
+            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+
+        /* ---------------- MANAJEMEN BAHASA (ID / EN) ---------------- */
+        const langBtn = document.getElementById('lang-toggle');
+
+        function applyLang(l) {
+            currentLang = l;
+            document.documentElement.lang = l;
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[l][key]) el.textContent = dict[l][key];
+            });
+
+            langBtn.textContent = l === 'id' ? 'ID / EN' : 'EN / ID';
+        }
+
+        langBtn.addEventListener('click', () => {
+            applyLang(currentLang === 'id' ? 'en' : 'id');
+        });
+
+        /* ---------------- LOGIKA SCRIPT UTAMA ---------------- */
+        async function hashPassword(password) {
+            const msgBuffer = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
+        }
+
+        async function prosesLogin() {
+            const user = document.getElementById("loginUser").value;
+            const pass = document.getElementById("loginPass").value;
+            if(!user || !pass) return alert(currentLang === 'id' ? "Isi username dan password!" : "Fill in username and password!");
+
+            const btn = document.getElementById("btnLogin");
+            const btnSpan = btn.querySelector('span');
+            const origText = btnSpan ? btnSpan.textContent : btn.innerText;
+            
+            if(btnSpan) btnSpan.textContent = currentLang === 'id' ? "Memverifikasi..." : "Verifying...";
+            else btn.innerText = currentLang === 'id' ? "Memverifikasi..." : "Verifying...";
+            btn.disabled = true;
+
+            const hash = await hashPassword(pass);
+            const payload = { action: "login", username: user, passwordHash: hash };
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success") {
+                    sessionUser = user;
+                    sessionPasswordHash = hash;
+                    sessionRole = data.role.toLowerCase().trim();
+                    
+                    document.getElementById("loginSection").style.display = "none";
+                    document.getElementById("dashboardSection").style.display = "block";
+                    document.getElementById("displayUsername").innerText = sessionUser;
+                    document.getElementById("userBadge").innerText = sessionRole.toUpperCase();
+                    
+                    if(sessionRole === "admin") {
+                        document.getElementById("adminSection").style.display = "block";
+                    }
+                } else {
+                    alert((currentLang === 'id' ? "Gagal Otentikasi: " : "Authentication Failed: ") + data.message);
+                }
+            })
+            .catch(err => {
+                alert((currentLang === 'id' ? "Kendala Jaringan Jarak Jauh: " : "Network Error: ") + err.message);
+                console.error(err);
+            })
+            .finally(() => {
+                if(btnSpan) btnSpan.textContent = origText;
+                else btn.innerText = origText;
+                btn.disabled = false;
+            });
+        }
+
+        function prosesUploadProduk() {
+            const fileInput = document.getElementById("prodFoto").files[0];
+            if (!fileInput) return alert(currentLang === 'id' ? "Pilih foto produk terlebih dahulu!" : "Please select a product photo!");
+
+            const btn = document.getElementById("btnPost");
+            const btnSpan = btn.querySelector('span');
+            const origText = btnSpan ? btnSpan.textContent : btn.innerText;
+
+            if(btnSpan) btnSpan.textContent = currentLang === 'id' ? "Sedang Menerbitkan..." : "Publishing...";
+            else btn.innerText = currentLang === 'id' ? "Sedang Menerbitkan..." : "Publishing...";
+            btn.disabled = true;
+
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput);
+            reader.onload = function () {
+                const payload = {
+                    action: "post_produk",
+                    username: sessionUser,
+                    passwordHash: sessionPasswordHash,
+                    nama: document.getElementById("prodNama").value,
+                    harga: document.getElementById("prodHarga").value,
+                    keterangan: document.getElementById("prodKeterangan").value,
+                    kontak: document.getElementById("prodKontak").value,
+                    image: reader.result,
+                    imageName: fileInput.name
+                };
+
+                fetch(WEB_APP_URL, { 
+                    method: "POST", 
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    if(data.status === "success") {
+                        document.getElementById("prodNama").value = "";
+                        document.getElementById("prodHarga").value = "";
+                        document.getElementById("prodKeterangan").value = "";
+                        document.getElementById("prodFoto").value = "";
+                    }
+                })
+                .catch(err => alert(currentLang === 'id' ? "Gagal mengunggah produk." : "Failed to upload product."))
+                .finally(() => { 
+                    if(btnSpan) btnSpan.textContent = origText;
+                    else btn.innerText = origText;
+                    btn.disabled = false; 
+                });
+            };
+        }
+
+        async function adminTambahUser() {
+            const newU = document.getElementById("newUsername").value;
+            const newP = document.getElementById("newPassword").value;
+            const newR = document.getElementById("newRole").value;
+
+            if(!newU || !newP) return alert(currentLang === 'id' ? "Lengkapi username & password baru!" : "Fill in new username & password!");
+
+            const btn = document.getElementById("btnTambahUser");
+            const btnSpan = btn.querySelector('span');
+            const origText = btnSpan ? btnSpan.textContent : btn.innerText;
+
+            if(btnSpan) btnSpan.textContent = currentLang === 'id' ? "Mendaftarkan..." : "Registering...";
+            else btn.innerText = currentLang === 'id' ? "Mendaftarkan..." : "Registering...";
+            btn.disabled = true;
+
+            const newHash = await hashPassword(newP);
+            const payload = {
+                action: "admin_add_seller",
+                username: sessionUser,
+                passwordHash: sessionPasswordHash,
+                newUsername: newU,
+                newPasswordHash: newHash,
+                newRole: newR
+            };
+
+            fetch(WEB_APP_URL, { 
+                method: "POST", 
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if(data.status === "success") {
+                    document.getElementById("newUsername").value = "";
+                    document.getElementById("newPassword").value = "";
+                }
+            })
+            .catch(err => alert(currentLang === 'id' ? "Gagal mendaftarkan user baru." : "Failed to register new user."))
+            .finally(() => { 
+                if(btnSpan) btnSpan.textContent = origText;
+                else btn.innerText = origText;
+                btn.disabled = false; 
+            });
+        }
+
+        function logout() {
+            sessionUser = ""; sessionPasswordHash = ""; sessionRole = "";
+            document.getElementById("dashboardSection").style.display = "none";
+            document.getElementById("adminSection").style.display = "none";
+            document.getElementById("loginSection").style.display = "block";
+            document.getElementById("loginUser").value = "";
+            document.getElementById("loginPass").value = "";
+        }
+
+        /* ---------------- INISIALISASI ---------------- */
+        window.onload = () => {
+            const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(isDark ? 'dark' : 'light');
+            applyLang('id');
+        };
+    </script>
+</body>
+</html>
