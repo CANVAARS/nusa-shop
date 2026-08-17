@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Marketplace - Multi-Role</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; max-width: 600px; margin: auto; background: #f0f2f5; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-weight: bold; color: #444; }
+        input, textarea, select, button { width: 100%; padding: 11px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #bbb; cursor: not-allowed; }
+        .danger-btn { background: #dc3545; }
+        .danger-btn:hover { background: #bd2130; }
+        .success-btn { background: #28a745; }
+        .success-btn:hover { background: #218838; }
+        #dashboardSection, #adminSection { display: none; }
+        .role-badge { display: inline-block; padding: 4px 10px; background: #e1f5fe; color: #0288d1; border-radius: 20px; font-size: 12px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- ================= 1. FORM LOGIN PORTAL ================= -->
+    <div id="loginSection" class="card">
+        <h2>Login Portal</h2>
+        <p style="color:#777; font-size:14px;">Masukkan akun Admin atau Seller Anda.</p>
+        <div class="form-group">
+            <label>Username:</label>
+            <input type="text" id="loginUser" placeholder="Username..." required>
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" id="loginPass" placeholder="Password..." required>
+        </div>
+        <button onclick="prosesLogin()">Masuk ke Sistem</button>
+    </div>
+
+    <!-- ================= 2. DASHBOARD SELLER & ADMIN (UNTUK UPLOAD) ================= -->
+    <div id="dashboardSection" class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>Dashboard Toko</h2>
+            <span id="userBadge" class="role-badge">Role</span>
+        </div>
+        <p>Selamat datang, <strong id="displayUsername">User</strong>! Anda bisa memposting barang baru di bawah ini.</p>
+        
+        <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+        
+        <h3>Post Dagangan Baru</h3>
+        <div class="form-group">
+            <label>Nama Barang:</label>
+            <input type="text" id="prodNama" required>
+        </div>
+        <div class="form-group">
+            <label>Harga Produk (Rp):</label>
+            <input type="number" id="prodHarga" required>
+        </div>
+        <div class="form-group">
+            <label>Deskripsi/Keterangan:</label>
+            <textarea id="prodKeterangan" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>No. WhatsApp Pembeli (Contoh: 628123456):</label>
+            <input type="text" id="prodKontak" required>
+        </div>
+        <div class="form-group">
+            <label>Foto Produk:</label>
+            <input type="file" id="prodFoto" accept="image/*" required>
+        </div>
+        <button id="btnPost" class="success-btn" onclick="prosesUploadProduk()">Terbitkan Produk</button>
+        <button class="danger-btn" onclick="logout()">Keluar / Logout</button>
+    </div>
+
+    <!-- ================= 3. PANEL KHUSUS ADMIN (MANAJEMEN SELLER) ================= -->
+    <div id="adminSection" class="card" style="border-top: 5px solid #007bff;">
+        <h2>🛠️ Panel Kontrol Admin</h2>
+        <p>Fitur ini hanya muncul karena Anda login sebagai <strong>Admin</strong>.</p>
+        
+        <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
+        
+        <h3>Tambah Akun Seller/Admin Baru</h3>
+        <div class="form-group">
+            <label>Username Baru:</label>
+            <input type="text" id="newUsername" placeholder="Contoh: toko_baju">
+        </div>
+        <div class="form-group">
+            <label>Password Baru:</label>
+            <input type="password" id="newPassword" placeholder="Password akun baru...">
+        </div>
+        <div class="form-group">
+            <label>Pilih Role Hak Akses:</label>
+            <select id="newRole">
+                <option value="seller">Seller (Hanya bisa upload produk)</option>
+                <option value="admin">Admin (Kontrol penuh sistem)</option>
+            </select>
+        </div>
+        <button onclick="adminTambahUser()">Daftarkan Akun Baru</button>
+    </div>
+
+    <script>
+        const WEB_APP_URL = "URL_WEB_APP_GOOGLE_ANDA"; // <== GANTI DENGAN URL WEB APP APPS SCRIPT ANDA
+        
+        // State Penyimpanan Kredensial Sementara di Memori Browser (Aman)
+        let sessionUser = "";
+        let sessionPasswordHash = "";
+        let sessionRole = "";
+
+        // Fungsi Enkripsi SHA-256 Sisi Klien
+        async function hashPassword(password) {
+            const msgBuffer = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Fungsi Jalankan Login
+        async function prosesLogin() {
+            const user = document.getElementById("loginUser").value;
+            const pass = document.getElementById("loginPass").value;
+            if(!user || !pass) return alert("Isi username dan password!");
+
+            const hash = await hashPassword(pass);
+            
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "login", username: user, passwordHash: hash })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === "success") {
+                    sessionUser = user;
+                    sessionPasswordHash = hash;
+                    sessionRole = data.role;
+                    
+                    // Alihkan Tampilan Layar
+                    document.getElementById("loginSection").style.display = "none";
+                    document.getElementById("dashboardSection").style.display = "block";
+                    document.getElementById("displayUsername").innerText = sessionUser;
+                    document.getElementById("userBadge").innerText = sessionRole.toUpperCase();
+                    
+                    // Jika Admin, buka panel manajemen user
+                    if(sessionRole === "admin") {
+                        document.getElementById("adminSection").style.display = "block";
+                    }
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(err => alert("Gagal terhubung ke server Google."));
+        }
+
+        // Fungsi Kirim Produk Dagangan
+        function prosesUploadProduk() {
+            const fileInput = document.getElementById("prodFoto").files[0];
+            if (!fileInput) return alert("Pilih foto produk dulu!");
+
+            const btn = document.getElementById("btnPost");
+            btn.innerText = "Mengupload..."; btn.disabled = true;
+
+            const reader = new FileReader();
+            reader.readAsDataURL(fileInput);
+            reader.onload = function () {
+                const payload = {
+                    action: "post_produk",
+                    username: sessionUser,
+                    passwordHash: sessionPasswordHash,
+                    nama: document.getElementById("prodNama").value,
+                    harga: document.getElementById("prodHarga").value,
+                    keterangan: document.getElementById("prodKeterangan").value,
+                    kontak: document.getElementById("prodKontak").value,
+                    image: reader.result,
+                    imageName: fileInput.name
+                };
+
+                fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) })
+                .then(res => res.json())
+                .then(data => {
+                    alert(data.message);
+                    if(data.status === "success") {
+                        document.getElementById("prodNama").value = "";
+                        document.getElementById("prodHarga").value = "";
+                        document.getElementById("prodKeterangan").value = "";
+                        document.getElementById("prodFoto").value = "";
+                    }
+                })
+                .finally(() => { btn.innerText = "Terbitkan Produk"; btn.disabled = false; });
+            };
+        }
+
+        // Fungsi Khusus Admin: Tambah Akun Baru
+        async function adminTambahUser() {
+            const newU = document.getElementById("newUsername").value;
+            const newP = document.getElementById("newPassword").value;
+            const newR = document.getElementById("newRole").value;
+            if(!newU || !newP) return alert("Lengkapi data user baru!");
+
+            const newHash = await hashPassword(newP);
+            const payload = {
+                action: "admin_add_seller",
+                username: sessionUser,
+                passwordHash: sessionPasswordHash,
+                newUsername: newU,
+                newPasswordHash: newHash,
+                newRole: newR
+            };
+
+            fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if(data.status === "success") {
+                    document.getElementById("newUsername").value = "";
