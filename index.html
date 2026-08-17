@@ -3,26 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="app.title">Marketplace Keluarga</title>
+    <title data-i18n="app.title">Marketplace Keluarga — Nusacoin Theme</title>
+    
+    <!-- FONTS DARIPADA NUSACOIN SYSTEM -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
-        /* CSS VARIABLES & THEMING */
+        /* ============================================================
+           NUSACOIN — DESIGN TOKENS INTEGRATION
+           ============================================================ */
         :root {
-            --bg: #f7f9fa;
+            --nux-green: #27ae60;
+            --nux-green-dark: #1e8449;
+            --nux-green-deep: #0f3d26;
+            --gold: #d4a017;
+
+            --bg: #f7f5ef;
             --surface: #ffffff;
-            --surface-2: #e9ecef;
-            --ink: #333333;
-            --ink-soft: #666666;
+            --surface-2: #f0efe6;
+            --ink: #16231c;
+            --ink-soft: #56645c;
             --border: #e3ded0;
-            --primary: #007bff;
-            --primary-hover: #0056b3;
-            --price: #e03131;
-            --btn-buy: #28a745;
-            --btn-buy-hover: #218838;
-            --badge-bg: #e3fafc;
-            --badge-text: #0c8599;
-            --shadow: 0 4px 6px rgba(0,0,0,0.05);
-            --shadow-hover: 0 8px 15px rgba(0,0,0,0.1);
-            --transition: 0.3s ease;
+            --shadow: 0 10px 30px -12px rgba(15,61,38,0.18);
+
+            --font-display: 'Sora', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+
+            --radius: 14px;
+            --transition: 0.35s cubic-bezier(.22,.9,.32,1.24);
         }
 
         html[data-theme="dark"] {
@@ -32,111 +43,149 @@
             --ink: #eef3ec;
             --ink-soft: #9db3a4;
             --border: #24382c;
-            --primary: #1e8449;
-            --primary-hover: #27ae60;
-            --price: #ff6b6b;
-            --btn-buy: #27ae60;
-            --btn-buy-hover: #1e8449;
-            --badge-bg: #183127;
-            --badge-text: #63e6be;
-            --shadow: 0 4px 10px rgba(0,0,0,0.4);
-            --shadow-hover: 0 8px 20px rgba(0,0,0,0.6);
+            --shadow: 0 10px 34px -10px rgba(0,0,0,0.55);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--bg); color: var(--ink); transition: background var(--transition), color var(--transition); }
-        
-        /* HEADER */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--ink);
+            line-height: 1.65;
+            transition: background var(--transition), color var(--transition);
+        }
+        h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.01em; }
+        .mono { font-family: var(--font-mono); }
+
+        /* HEADER & TOP BAR */
         header { 
-            background: var(--primary); 
-            color: white; 
-            padding: 15px 20px; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-            transition: background var(--transition);
+            background: var(--surface); 
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 100; 
+            transition: background var(--transition), border-color var(--transition);
         }
         .header-wrap {
-            max-width: 1200px;
+            max-width: 1180px;
             margin: 0 auto;
+            padding: 16px 24px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 12px;
+            gap: 16px;
         }
         .header-top {
             display: flex;
-            width: 100%;
             justify-content: space-between;
             align-items: center;
         }
-        header h1 { font-size: 22px; font-weight: 700; }
-        .nav-tools { display: flex; gap: 8px; }
-        .tool-btn {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.4);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .tool-btn:hover { background: rgba(255,255,255,0.35); }
-
-        .search-container { width: 100%; max-width: 500px; position: relative; }
-        .search-container input { 
-            width: 100%; 
-            padding: 10px 20px; 
-            border: none; 
-            border-radius: 25px; 
-            font-size: 14px; 
-            outline: none; 
-            background: var(--surface);
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 1.3rem;
             color: var(--ink);
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
+        .logo-mark {
+            width: 36px; height: 36px; border-radius: 9px;
+            background: linear-gradient(135deg, var(--nux-green), var(--nux-green-deep));
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 1rem;
+        }
+        .logo-area .accent { color: var(--nux-green); }
 
-        /* HERO TEXT */
-        .hero { text-align: center; padding: 25px 15px; background: var(--surface-2); transition: background var(--transition); }
-        .hero p { color: var(--ink-soft); font-size: 15px; max-width: 600px; margin: 0 auto; }
+        /* BUTTONS & TOOLS */
+        .nav-tools { display: flex; align-items: center; gap: 8px; }
+        .tool-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: var(--surface-2); border: 1px solid var(--border); color: var(--ink);
+            padding: 8px 14px; border-radius: 9px; font-size: 0.78rem; font-weight: 700; cursor: pointer;
+            font-family: var(--font-mono); transition: border-color 0.2s, color 0.2s, transform 0.2s;
+        }
+        .tool-btn:hover { border-color: var(--nux-green); color: var(--nux-green); transform: translateY(-1px); }
 
-        /* GRID PRODUK */
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 15px; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
-
-        /* KARTU PRODUK */
-        .product-card { 
-            background: var(--surface); 
+        /* SEARCH CONTAINER */
+        .search-container { max-width: 600px; margin: 0 auto; width: 100%; }
+        .search-container input {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: var(--radius);
             border: 1px solid var(--border);
-            border-radius: 12px; 
-            overflow: hidden; 
-            box-shadow: var(--shadow); 
-            transition: transform 0.2s, box-shadow 0.2s, background var(--transition), border-color var(--transition); 
-            display: flex; 
-            flex-direction: column; 
+            background: var(--surface-2);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
         }
-        .product-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
-        .img-container { width: 100%; height: 200px; background: var(--surface-2); overflow: hidden; position: relative; }
-        .product-img { width: 100%; height: 100%; object-fit: cover; }
-        .product-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; color: var(--ink); line-height: 1.4; height: 44px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        .product-price { font-size: 18px; font-weight: 800; color: var(--price); margin-bottom: 10px; }
-        .product-desc { font-size: 13px; color: var(--ink-soft); margin-bottom: 15px; line-height: 1.5; height: 58px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
-        .seller-badge { font-size: 11px; background: var(--badge-bg); color: var(--badge-text); padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 15px; align-self: flex-start; }
-        
-        /* TOMBOL BELI */
-        .btn-buy { display: block; text-align: center; background: var(--btn-buy); color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 14px; transition: background 0.2s; }
-        .btn-buy:hover { background: var(--btn-buy-hover); }
+        .search-container input:focus { border-color: var(--nux-green); }
 
-        /* LOADING & ERROR */
-        .status-msg { text-align: center; font-size: 18px; padding: 20px; color: var(--ink-soft); width: 100%; grid-column: 1 / -1; }
-        
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(90deg, var(--nux-green-deep), var(--nux-green));
+            color: #fff;
+            padding: 40px 24px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 14px 34px -14px rgba(15,61,38,0.55);
+        }
+        .hero p { max-width: 650px; margin: 0 auto; font-size: 1.05rem; opacity: 0.95; }
+
+        /* GRID & CARDS */
+        .wrap { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 24px; }
+
+        .product-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+            display: flex; flex-direction: column;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--nux-green);
+            box-shadow: 0 14px 26px -12px rgba(39,174,96,0.28);
+        }
+
+        .img-container { width: 100%; height: 200px; background: var(--surface-2); overflow: hidden; position: relative; }
+        .product-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .product-card:hover .product-img { transform: scale(1.06); }
+
+        .product-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-title {
+            font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; color: var(--ink);
+            line-height: 1.4; height: 44px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+        }
+        .product-price { font-family: var(--font-mono); font-size: 1.25rem; font-weight: 700; color: var(--nux-green); margin-bottom: 10px; }
+        .product-desc { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 16px; height: 58px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+
+        .seller-badge {
+            font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+            color: var(--nux-green); background: var(--surface-2); border: 1px solid var(--border);
+            padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 16px;
+        }
+
+        .btn-buy {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: var(--nux-green); color: #fff; text-decoration: none; padding: 12px;
+            border-radius: 9px; font-weight: 700; font-size: 0.88rem; transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 8px 20px -6px rgba(39,174,96,0.55);
+        }
+        .btn-buy:hover { background: var(--nux-green-dark); transform: translateY(-2px); }
+
+        .status-msg { text-align: center; font-size: 1.1rem; padding: 40px; color: var(--ink-soft); grid-column: 1 / -1; }
+
         /* FOOTER */
-        footer { text-align: center; padding: 25px; color: var(--ink-soft); font-size: 13px; background: var(--surface-2); border-top: 1px solid var(--border); margin-top: 40px; }
-        footer a { color: var(--primary); text-decoration: none; margin-left: 10px; }
+        footer {
+            background: var(--surface-2); border-top: 1px solid var(--border);
+            padding: 40px 0; margin-top: 60px; text-align: center; color: var(--ink-soft); font-size: 0.87rem;
+            transition: background var(--transition);
+        }
+        footer a { color: var(--nux-green); text-decoration: none; font-weight: 600; margin-left: 10px; }
         footer a:hover { text-decoration: underline; }
     </style>
 </head>
@@ -146,10 +195,13 @@
     <header>
         <div class="header-wrap">
             <div class="header-top">
-                <h1 data-i18n="header.title">🏪 Toko Bersama</h1>
+                <div class="logo-area">
+                    <div class="logo-mark"><i class="fas fa-store"></i></div>
+                    TOKO <span class="accent">BERSAMA</span>
+                </div>
                 <div class="nav-tools">
                     <button class="tool-btn" id="lang-toggle" aria-label="Ganti Bahasa">ID / EN</button>
-                    <button class="tool-btn" id="theme-toggle" aria-label="Ganti Tema">🌙</button>
+                    <button class="tool-btn" id="theme-toggle" aria-label="Ganti Tema"><i class="fas fa-moon"></i></button>
                 </div>
             </div>
             <div class="search-container">
@@ -159,42 +211,44 @@
     </header>
 
     <div class="hero">
-        <p data-i18n="hero.desc">Selamat datang di Marketplace lokal kami. Cari produk terbaik yang langsung diunggah oleh para pedagang terpercaya kami.</p>
-    </div>
-
-    <!-- UTAMA -->
-    <div class="container">
-        <div class="product-grid" id="productGrid">
-            <div class="status-msg" id="statusMessage" data-i18n="status.loading">Sedang memuat produk terpilih...</div>
+        <div class="wrap">
+            <p data-i18n="hero.desc">Selamat datang di Marketplace lokal kami. Cari produk terbaik yang langsung diunggah oleh para pedagang terpercaya kami.</p>
         </div>
     </div>
 
+    <!-- UTAMA PRODUK -->
+    <main class="wrap">
+        <div class="product-grid" id="productGrid">
+            <div class="status-msg" id="statusMessage" data-i18n="status.loading">Sedang memuat produk terpilih...</div>
+        </div>
+    </main>
+
     <script>
-        // INTEGRASI KAMUS BAHASA (DICTIONARY)
+        /* ---------------- DICTIONARY (ID / EN) ---------------- */
         const dict = {
             id: {
-                "app.title": "Marketplace Keluarga",
-                "header.title": "🏪 Toko Bersama",
+                "app.title": "Marketplace Keluarga — Nusacoin Theme",
                 "search.placeholder": "Cari barang kebutuhanmu di sini...",
                 "hero.desc": "Selamat datang di Marketplace lokal kami. Cari produk terbaik yang langsung diunggah oleh para pedagang terpercaya kami.",
                 "status.loading": "Sedang memuat produk terpilih...",
                 "status.error": "Gagal memuat produk. Periksa koneksi atau URL CSV.",
                 "status.empty": "Produk tidak ditemukan atau belum ada dagangan.",
-                "card.seller": "👤 Seller:",
-                "card.buy": "💬 Hubungi Penjual",
+                "card.seller": "SELLER:",
+                "card.buy": "Hubungi Penjual",
+                "footer.copy": "© 2026 Toko Bersama. Powered by Nusacoin Design.",
                 "footer.portal": "Masuk ke Portal Penjual",
                 "wa.text": "Halo, saya tertarik dengan produk \"{nama}\" seharga {harga}. Apakah masih tersedia?"
             },
             en: {
-                "app.title": "Family Marketplace",
-                "header.title": "🏪 Community Shop",
+                "app.title": "Family Marketplace — Nusacoin Theme",
                 "search.placeholder": "Search for items you need here...",
                 "hero.desc": "Welcome to our local Marketplace. Find the best products uploaded directly by our trusted sellers.",
                 "status.loading": "Loading selected products...",
                 "status.error": "Failed to load products. Check your connection or CSV URL.",
                 "status.empty": "No products found or available.",
-                "card.seller": "👤 Seller:",
-                "card.buy": "💬 Contact Seller",
+                "card.seller": "SELLER:",
+                "card.buy": "Contact Seller",
+                "footer.copy": "© 2026 Toko Bersama. Powered by Nusacoin Design.",
                 "footer.portal": "Enter Seller Portal",
                 "wa.text": "Hello, I am interested in the product \"{nama}\" priced at {harga}. Is it still available?"
             }
@@ -206,34 +260,32 @@
 
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQEKRc1VKMVTMAVKccUr4RhSBTBNFofUrYANxx_5Dy5v9yNc4B7IZfujS3mMifXXBIOT7Ymvjz9Sg6P/pub?gid=2040498345&single=true&output=csv"; 
 
-        // SYSTEM TEMA (LIGHT / DARK)
+        /* ---------------- TEMA (DARK / LIGHT) ---------------- */
         const root = document.documentElement;
         const themeBtn = document.getElementById('theme-toggle');
 
         function applyTheme(t) {
             currentTheme = t;
             root.setAttribute('data-theme', t);
-            themeBtn.innerHTML = t === 'dark' ? '☀️' : '🌙';
+            themeBtn.innerHTML = t === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
         }
 
         themeBtn.addEventListener('click', () => {
             applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
         });
 
-        // SYSTEM BAHASA (ID / EN)
+        /* ---------------- BAHASA (ID / EN) ---------------- */
         const langBtn = document.getElementById('lang-toggle');
 
         function applyLang(l) {
             currentLang = l;
             document.documentElement.lang = l;
             
-            // Update Teks Berdasarkan Atribut data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (dict[l][key]) el.textContent = dict[l][key];
             });
 
-            // Update Placeholder Input
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 if (dict[l][key]) el.placeholder = dict[l][key];
@@ -241,7 +293,6 @@
 
             langBtn.textContent = l === 'id' ? 'ID / EN' : 'EN / ID';
 
-            // Re-render daftar produk jika sudah ada data terpanggil
             if (listSemuaProduk.length > 0) {
                 tampilkanProduk(listSemuaProduk);
             }
@@ -251,7 +302,7 @@
             applyLang(currentLang === 'id' ? 'en' : 'id');
         });
 
-        // FUNGSI LOAD CSV SPREADSHEET
+        /* ---------------- FETCH CSV ---------------- */
         function muatDataProduk() {
             fetch(CSV_URL)
             .then(response => response.text())
@@ -296,7 +347,7 @@
             return p;
         }
 
-        // FUNGSI RENDER PRODUK DENGAN FITUR MULTI-BAHASA
+        /* ---------------- RENDER PRODUK ---------------- */
         function tampilkanProduk(produkArray) {
             const grid = document.getElementById("productGrid");
             grid.innerHTML = "";
@@ -307,7 +358,6 @@
             }
 
             produkArray.forEach(item => {
-                // Formatting Mata Uang (Sesuai locale bahasa yang dipilih)
                 const currencyFormat = currentLang === 'en' ? 'USD' : 'IDR';
                 const localeFormat = currentLang === 'en' ? 'en-US' : 'id-ID';
                 
@@ -317,7 +367,6 @@
                     minimumFractionDigits: 0 
                 }).format(item.harga);
                 
-                // Formatting Teks WhatsApp
                 const textTemplate = dict[currentLang]["wa.text"]
                     .replace("{nama}", item.nama)
                     .replace("{harga}", hargaFormat);
@@ -338,8 +387,8 @@
                             <div class="product-desc">${item.keterangan}</div>
                         </div>
                         <div>
-                            <span class="seller-badge">${dict[currentLang]["card.seller"]} ${item.penjual}</span>
-                            <a href="${linkWA}" target="_blank" class="btn-buy">${dict[currentLang]["card.buy"]}</a>
+                            <span class="seller-badge">👤 ${dict[currentLang]["card.seller"]} ${item.penjual}</span>
+                            <a href="${linkWA}" target="_blank" class="btn-buy"><i class="fab fa-whatsapp"></i> ${dict[currentLang]["card.buy"]}</a>
                         </div>
                     </div>
                 `;
@@ -355,9 +404,10 @@
             tampilkanProduk(hasilFilter);
         }
 
-        // INIT SAAT HALAMAN DIMUAT
+        /* ---------------- INIT ---------------- */
         window.onload = () => {
-            applyTheme('light');
+            const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(isDark ? 'dark' : 'light');
             applyLang('id');
             muatDataProduk();
         };
@@ -365,8 +415,10 @@
 
     <!-- FOOTER -->
     <footer>
-        <span data-i18n="footer.copy">© 2026 Toko Bersama.</span> 
-        <a href="login.html" data-i18n="footer.portal">Masuk ke Portal Penjual</a>
+        <div class="wrap">
+            <span data-i18n="footer.copy">© 2026 Toko Bersama. Powered by Nusacoin Design.</span>
+            <a href="login.html" data-i18n="footer.portal">Masuk ke Portal Penjual</a>
+        </div>
     </footer>
 </body>
 </html>
