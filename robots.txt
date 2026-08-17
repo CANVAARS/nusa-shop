@@ -60,4 +60,4 @@ Disallow: /.github/
 Disallow: /admin/
 
 # Sitemap links
-Sitemap: https://www.nusacoin.site/sitemap.xml
+Sitemap: https://shop.nusachain.org/sitemap.xml
