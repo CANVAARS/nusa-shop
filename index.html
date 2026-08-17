@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace Keluarga</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f7f9fa; color: #333; }
+        
+        /* HEADER */
+        header { background: #007bff; color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header h1 { font-size: 24px; margin-bottom: 10px; }
+        .search-container { max-width: 500px; margin: 0 auto; position: relative; }
+        .search-container input { width: 100%; padding: 12px 20px; border: none; border-radius: 25px; font-size: 15px; outline: none; }
+
+        /* HERO TEXT */
+        .hero { text-align: center; padding: 30px 15px; background: #e9ecef; }
+        .hero p { color: #666; font-size: 16px; max-width: 600px; margin: 0 auto; }
+
+        /* GRID PRODUK */
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 15px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
+
+        /* KARTU PRODUK */
+        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .img-container { width: 100%; height: 200px; background: #eee; overflow: hidden; position: relative; }
+        .product-img { width: 100%; height: 100%; object-fit: cover; }
+        .product-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .product-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #222; line-height: 1.4; height: 44px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .product-price { font-size: 18px; font-weight: 800; color: #e03131; margin-bottom: 10px; }
+        .product-desc { font-size: 13px; color: #666; margin-bottom: 15px; line-height: 1.5; height: 58px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+        .seller-badge { font-size: 11px; background: #e3fafc; color: #0c8599; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 15px; align-self: flex-start; }
+        
+        /* TOMBOL BELI */
+        .btn-buy { display: block; text-align: center; background: #28a745; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 14px; transition: background 0.2s; }
+        .btn-buy:hover { background: #218838; }
+
+        /* LOADING & ERROR */
+        .status-msg { text-align: center; font-size: 18px; padding: 5px; color: #666; width: 100%; grid-column: 1 / -1; }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER & PENCARIAN -->
+    <header>
+        <h1>🏪 Toko Bersama</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Cari barang kebutuhanmu di sini..." oninput="filterProduk()">
+        </div>
+    </header>
+
+    <div class="hero">
+        <p>Selamat datang di Marketplace lokal kami. Cari produk terbaik yang langsung diunggah oleh para pedagang terpercaya kami.</p>
+    </div>
+
+    <!-- UTAMA -->
+    <div class="container">
+        <div class="product-grid" id="productGrid">
+            <div class="status-msg" id="statusMessage">Sedang memuat produk terpilih...</div>
+        </div>
+    </div>
+
+    <script>
+        // GANTI DENGAN URL CSV HASIL PUBLISH TO WEB SPREADSHEET ANDA
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQEKRc1VKMVTMAVKccUr4RhSBTBNFofUrYANxx_5Dy5v9yNc4B7IZfujS3mMifXXBIOT7Ymvjz9Sg6P/pub?gid=2040498345&single=true&output=csv"; 
+
+        let listSemuaProduk = [];
+
+        // Fungsi Membaca CSV dari Google Spreadsheet
+        function muatDataProduk() {
+            fetch(CSV_URL)
+            .then(response => response.text())
+            .then(data => {
+                const baris = data.split("\n");
+                listSemuaProduk = [];
+
+                // Mulai dari indeks 1 untuk melewati baris header nama kolom
+                for (let i = 1; i < baris.length; i++) {
+                    if (!baris[i].trim()) continue;
+                    
+                    // Parsing CSV sederhana (memisahkan kolom berdasarkan koma)
+                    const kolom = parseCSVRow(baris[i]);
+                    
+                    // Struktur kolom: ID_Produk[0], Nama[1], Harga[2], Keterangan[3], Kontak[4], LinkGambar[5], Penjual[6]
+                    if (kolom.length >= 6) {
+                        listSemuaProduk.push({
+                            id: kolom[0],
+                            nama: kolom[1],
+                            harga: kolom[2],
+                            keterangan: kolom[3],
+                            kontak: kolom[4],
+                            gambar: kolom[5],
+                            penjual: kolom[6] || "Umum"
+                        });
+                    }
+                }
+                
+                // Urutkan dari produk terbaru (berdasarkan urutan masuk spreadsheet paling bawah)
+                listSemuaProduk.reverse();
+                tampilkanProduk(listSemuaProduk);
+            })
+            .catch(err => {
+                document.getElementById("statusMessage").innerText = "Gagal memuat produk. Periksa koneksi atau URL CSV.";
+                console.error(err);
+            });
+        }
+
+        // Helper untuk menangani teks CSV yang mengandung koma di dalam tanda kutip
+        function parseCSVRow(text) {
+            let p = [''], i = 0, r = false;
+            for (let q = 0; q < text.length; q++) {
+                let c = text[q];
+                if (c === '"') { r = !r; }
+                else if (c === ',' && !r) { p[++i] = ''; }
+                else { p[i] += c; }
+            }
+            return p;
+        }
+
+        // Fungsi Render Kartu Produk ke Layar HTML
+        function tampilkanProduk(produkArray) {
+            const grid = document.getElementById("productGrid");
+            grid.innerHTML = "";
+
+            if (produkArray.length === 0) {
+                grid.innerHTML = '<div class="status-msg">Produk tidak ditemukan atau belum ada dagangan.</div>';
+                return;
+            }
+
+            produkArray.forEach(item => {
+                // Format Rupiah standar
+                const hargaFormat = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(item.harga);
+                
+                // Format Teks WhatsApp otomatis
+                const teksWA = encodeURIComponent(`Halo, saya tertarik dengan produk "${item.nama}" seharga ${hargaFormat}. Apakah masih tersedia?`);
+                const linkWA = `https://wa.me{item.kontak.trim()}?text=${teksWA}`;
+
+                const card = document.createElement("div");
+                card.className = "product-card";
+                card.innerHTML = `
+                    <div class="img-container">
+                        <img class="product-img" src="${item.gambar}" alt="${item.nama}" onerror="this.src='https://placehold.co'">
+                    </div>
+                    <div class="product-info">
+                        <div>
+                            <div class="product-title" title="${item.nama}">${item.nama}</div>
+                            <div class="product-price">${hargaFormat}</div>
+                            <div class="product-desc">${item.keterangan}</div>
+                        </div>
+                        <div>
+                            <span class="seller-badge">👤 Seller: ${item.penjual}</span>
+                            <a href="${linkWA}" target="_blank" class="btn-buy">💬 Hubungi Penjual</a>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Fungsi Cari Barang secara Live/Real-time
+        function filterProduk() {
+            const keyword = document.getElementById("searchInput").value.toLowerCase();
+            const hasilFilter = listSemuaProduk.filter(item => {
+                return item.nama.toLowerCase().includes(keyword) || item.keterangan.toLowerCase().includes(keyword);
+            });
+            tampilkanProduk(hasilFilter);
+        }
+
+        // Jalankan pengambilan data secara otomatis saat web dibuka pertama kali
+        window.onload = muatDataProduk;
+    </script>
+</body>
+</html>
