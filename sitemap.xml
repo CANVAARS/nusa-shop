@@ -2,17 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Halaman Utama -->
   <url>
-    <loc>https://www.nusacoin.site/</loc>
-    <lastmod>2026-08-05</lastmod>
+    <loc>https://shop.nusachain.org/</loc>
+    <lastmod>2026-08-17</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-  </url>
-  
-  <!-- Halaman Verisign Testnet -->
-  <url>
-    <loc>https://www.nusacoin.site/Pages/Verisign-Testnet.html</loc>
-    <lastmod>2026-08-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
   </url>
 </urlset>
