@@ -1,74 +1,257 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketplace Keluarga</title>
+    <title data-i18n="app.title">Marketplace Keluarga</title>
     <style>
+        /* CSS VARIABLES & THEMING */
+        :root {
+            --bg: #f7f9fa;
+            --surface: #ffffff;
+            --surface-2: #e9ecef;
+            --ink: #333333;
+            --ink-soft: #666666;
+            --border: #e3ded0;
+            --primary: #007bff;
+            --primary-hover: #0056b3;
+            --price: #e03131;
+            --btn-buy: #28a745;
+            --btn-buy-hover: #218838;
+            --badge-bg: #e3fafc;
+            --badge-text: #0c8599;
+            --shadow: 0 4px 6px rgba(0,0,0,0.05);
+            --shadow-hover: 0 8px 15px rgba(0,0,0,0.1);
+            --transition: 0.3s ease;
+        }
+
+        html[data-theme="dark"] {
+            --bg: #0d1712;
+            --surface: #142219;
+            --surface-2: #182a1e;
+            --ink: #eef3ec;
+            --ink-soft: #9db3a4;
+            --border: #24382c;
+            --primary: #1e8449;
+            --primary-hover: #27ae60;
+            --price: #ff6b6b;
+            --btn-buy: #27ae60;
+            --btn-buy-hover: #1e8449;
+            --badge-bg: #183127;
+            --badge-text: #63e6be;
+            --shadow: 0 4px 10px rgba(0,0,0,0.4);
+            --shadow-hover: 0 8px 20px rgba(0,0,0,0.6);
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f7f9fa; color: #333; }
+        body { background-color: var(--bg); color: var(--ink); transition: background var(--transition), color var(--transition); }
         
         /* HEADER */
-        header { background: #007bff; color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        header h1 { font-size: 24px; margin-bottom: 10px; }
-        .search-container { max-width: 500px; margin: 0 auto; position: relative; }
-        .search-container input { width: 100%; padding: 12px 20px; border: none; border-radius: 25px; font-size: 15px; outline: none; }
+        header { 
+            background: var(--primary); 
+            color: white; 
+            padding: 15px 20px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+            transition: background var(--transition);
+        }
+        .header-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .header-top {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 { font-size: 22px; font-weight: 700; }
+        .nav-tools { display: flex; gap: 8px; }
+        .tool-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tool-btn:hover { background: rgba(255,255,255,0.35); }
+
+        .search-container { width: 100%; max-width: 500px; position: relative; }
+        .search-container input { 
+            width: 100%; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 25px; 
+            font-size: 14px; 
+            outline: none; 
+            background: var(--surface);
+            color: var(--ink);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
 
         /* HERO TEXT */
-        .hero { text-align: center; padding: 30px 15px; background: #e9ecef; }
-        .hero p { color: #666; font-size: 16px; max-width: 600px; margin: 0 auto; }
+        .hero { text-align: center; padding: 25px 15px; background: var(--surface-2); transition: background var(--transition); }
+        .hero p { color: var(--ink-soft); font-size: 15px; max-width: 600px; margin: 0 auto; }
 
         /* GRID PRODUK */
         .container { max-width: 1200px; margin: 30px auto; padding: 0 15px; }
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 20px; }
 
         /* KARTU PRODUK */
-        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
-        .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
-        .img-container { width: 100%; height: 200px; background: #eee; overflow: hidden; position: relative; }
+        .product-card { 
+            background: var(--surface); 
+            border: 1px solid var(--border);
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: var(--shadow); 
+            transition: transform 0.2s, box-shadow 0.2s, background var(--transition), border-color var(--transition); 
+            display: flex; 
+            flex-direction: column; 
+        }
+        .product-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        .img-container { width: 100%; height: 200px; background: var(--surface-2); overflow: hidden; position: relative; }
         .product-img { width: 100%; height: 100%; object-fit: cover; }
         .product-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #222; line-height: 1.4; height: 44px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        .product-price { font-size: 18px; font-weight: 800; color: #e03131; margin-bottom: 10px; }
-        .product-desc { font-size: 13px; color: #666; margin-bottom: 15px; line-height: 1.5; height: 58px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
-        .seller-badge { font-size: 11px; background: #e3fafc; color: #0c8599; padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 15px; align-self: flex-start; }
+        .product-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; color: var(--ink); line-height: 1.4; height: 44px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .product-price { font-size: 18px; font-weight: 800; color: var(--price); margin-bottom: 10px; }
+        .product-desc { font-size: 13px; color: var(--ink-soft); margin-bottom: 15px; line-height: 1.5; height: 58px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+        .seller-badge { font-size: 11px; background: var(--badge-bg); color: var(--badge-text); padding: 3px 8px; border-radius: 4px; display: inline-block; margin-bottom: 15px; align-self: flex-start; }
         
         /* TOMBOL BELI */
-        .btn-buy { display: block; text-align: center; background: #28a745; color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 14px; transition: background 0.2s; }
-        .btn-buy:hover { background: #218838; }
+        .btn-buy { display: block; text-align: center; background: var(--btn-buy); color: white; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; font-size: 14px; transition: background 0.2s; }
+        .btn-buy:hover { background: var(--btn-buy-hover); }
 
         /* LOADING & ERROR */
-        .status-msg { text-align: center; font-size: 18px; padding: 5px; color: #666; width: 100%; grid-column: 1 / -1; }
+        .status-msg { text-align: center; font-size: 18px; padding: 20px; color: var(--ink-soft); width: 100%; grid-column: 1 / -1; }
+        
+        /* FOOTER */
+        footer { text-align: center; padding: 25px; color: var(--ink-soft); font-size: 13px; background: var(--surface-2); border-top: 1px solid var(--border); margin-top: 40px; }
+        footer a { color: var(--primary); text-decoration: none; margin-left: 10px; }
+        footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
     <!-- HEADER & PENCARIAN -->
     <header>
-        <h1>🏪 Toko Bersama</h1>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Cari barang kebutuhanmu di sini..." oninput="filterProduk()">
+        <div class="header-wrap">
+            <div class="header-top">
+                <h1 data-i18n="header.title">🏪 Toko Bersama</h1>
+                <div class="nav-tools">
+                    <button class="tool-btn" id="lang-toggle" aria-label="Ganti Bahasa">ID / EN</button>
+                    <button class="tool-btn" id="theme-toggle" aria-label="Ganti Tema">🌙</button>
+                </div>
+            </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Cari barang kebutuhanmu di sini..." data-i18n-placeholder="search.placeholder" oninput="filterProduk()">
+            </div>
         </div>
     </header>
 
     <div class="hero">
-        <p>Selamat datang di Marketplace lokal kami. Cari produk terbaik yang langsung diunggah oleh para pedagang terpercaya kami.</p>
+        <p data-i18n="hero.desc">Selamat datang di Marketplace lokal kami. Cari produk terbaik yang langsung diunggah oleh para pedagang terpercaya kami.</p>
     </div>
 
     <!-- UTAMA -->
     <div class="container">
         <div class="product-grid" id="productGrid">
-            <div class="status-msg" id="statusMessage">Sedang memuat produk terpilih...</div>
+            <div class="status-msg" id="statusMessage" data-i18n="status.loading">Sedang memuat produk terpilih...</div>
         </div>
     </div>
 
     <script>
-        // GANTI DENGAN URL CSV HASIL PUBLISH TO WEB SPREADSHEET ANDA
-        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQEKRc1VKMVTMAVKccUr4RhSBTBNFofUrYANxx_5Dy5v9yNc4B7IZfujS3mMifXXBIOT7Ymvjz9Sg6P/pub?gid=2040498345&single=true&output=csv"; 
+        // INTEGRASI KAMUS BAHASA (DICTIONARY)
+        const dict = {
+            id: {
+                "app.title": "Marketplace Keluarga",
+                "header.title": "🏪 Toko Bersama",
+                "search.placeholder": "Cari barang kebutuhanmu di sini...",
+                "hero.desc": "Selamat datang di Marketplace lokal kami. Cari produk terbaik yang langsung diunggah oleh para pedagang terpercaya kami.",
+                "status.loading": "Sedang memuat produk terpilih...",
+                "status.error": "Gagal memuat produk. Periksa koneksi atau URL CSV.",
+                "status.empty": "Produk tidak ditemukan atau belum ada dagangan.",
+                "card.seller": "👤 Seller:",
+                "card.buy": "💬 Hubungi Penjual",
+                "footer.portal": "Masuk ke Portal Penjual",
+                "wa.text": "Halo, saya tertarik dengan produk \"{nama}\" seharga {harga}. Apakah masih tersedia?"
+            },
+            en: {
+                "app.title": "Family Marketplace",
+                "header.title": "🏪 Community Shop",
+                "search.placeholder": "Search for items you need here...",
+                "hero.desc": "Welcome to our local Marketplace. Find the best products uploaded directly by our trusted sellers.",
+                "status.loading": "Loading selected products...",
+                "status.error": "Failed to load products. Check your connection or CSV URL.",
+                "status.empty": "No products found or available.",
+                "card.seller": "👤 Seller:",
+                "card.buy": "💬 Contact Seller",
+                "footer.portal": "Enter Seller Portal",
+                "wa.text": "Hello, I am interested in the product \"{nama}\" priced at {harga}. Is it still available?"
+            }
+        };
 
+        let currentLang = 'id';
+        let currentTheme = 'light';
         let listSemuaProduk = [];
 
-        // Fungsi Membaca CSV dari Google Spreadsheet
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQEKRc1VKMVTMAVKccUr4RhSBTBNFofUrYANxx_5Dy5v9yNc4B7IZfujS3mMifXXBIOT7Ymvjz9Sg6P/pub?gid=2040498345&single=true&output=csv"; 
+
+        // SYSTEM TEMA (LIGHT / DARK)
+        const root = document.documentElement;
+        const themeBtn = document.getElementById('theme-toggle');
+
+        function applyTheme(t) {
+            currentTheme = t;
+            root.setAttribute('data-theme', t);
+            themeBtn.innerHTML = t === 'dark' ? '☀️' : '🌙';
+        }
+
+        themeBtn.addEventListener('click', () => {
+            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+
+        // SYSTEM BAHASA (ID / EN)
+        const langBtn = document.getElementById('lang-toggle');
+
+        function applyLang(l) {
+            currentLang = l;
+            document.documentElement.lang = l;
+            
+            // Update Teks Berdasarkan Atribut data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[l][key]) el.textContent = dict[l][key];
+            });
+
+            // Update Placeholder Input
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (dict[l][key]) el.placeholder = dict[l][key];
+            });
+
+            langBtn.textContent = l === 'id' ? 'ID / EN' : 'EN / ID';
+
+            // Re-render daftar produk jika sudah ada data terpanggil
+            if (listSemuaProduk.length > 0) {
+                tampilkanProduk(listSemuaProduk);
+            }
+        }
+
+        langBtn.addEventListener('click', () => {
+            applyLang(currentLang === 'id' ? 'en' : 'id');
+        });
+
+        // FUNGSI LOAD CSV SPREADSHEET
         function muatDataProduk() {
             fetch(CSV_URL)
             .then(response => response.text())
@@ -76,14 +259,9 @@
                 const baris = data.split("\n");
                 listSemuaProduk = [];
 
-                // Mulai dari indeks 1 untuk melewati baris header nama kolom
                 for (let i = 1; i < baris.length; i++) {
                     if (!baris[i].trim()) continue;
-                    
-                    // Parsing CSV sederhana (memisahkan kolom berdasarkan koma)
                     const kolom = parseCSVRow(baris[i]);
-                    
-                    // Struktur kolom: ID_Produk[0], Nama[1], Harga[2], Keterangan[3], Kontak[4], LinkGambar[5], Penjual[6]
                     if (kolom.length >= 6) {
                         listSemuaProduk.push({
                             id: kolom[0],
@@ -97,17 +275,16 @@
                     }
                 }
                 
-                // Urutkan dari produk terbaru (berdasarkan urutan masuk spreadsheet paling bawah)
                 listSemuaProduk.reverse();
                 tampilkanProduk(listSemuaProduk);
             })
             .catch(err => {
-                document.getElementById("statusMessage").innerText = "Gagal memuat produk. Periksa koneksi atau URL CSV.";
+                const msgEl = document.getElementById("statusMessage");
+                if(msgEl) msgEl.innerText = dict[currentLang]["status.error"];
                 console.error(err);
             });
         }
 
-        // Helper untuk menangani teks CSV yang mengandung koma di dalam tanda kutip
         function parseCSVRow(text) {
             let p = [''], i = 0, r = false;
             for (let q = 0; q < text.length; q++) {
@@ -119,29 +296,40 @@
             return p;
         }
 
-        // Fungsi Render Kartu Produk ke Layar HTML
+        // FUNGSI RENDER PRODUK DENGAN FITUR MULTI-BAHASA
         function tampilkanProduk(produkArray) {
             const grid = document.getElementById("productGrid");
             grid.innerHTML = "";
 
             if (produkArray.length === 0) {
-                grid.innerHTML = '<div class="status-msg">Produk tidak ditemukan atau belum ada dagangan.</div>';
+                grid.innerHTML = `<div class="status-msg">${dict[currentLang]["status.empty"]}</div>`;
                 return;
             }
 
             produkArray.forEach(item => {
-                // Format Rupiah standar
-                const hargaFormat = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(item.harga);
+                // Formatting Mata Uang (Sesuai locale bahasa yang dipilih)
+                const currencyFormat = currentLang === 'en' ? 'USD' : 'IDR';
+                const localeFormat = currentLang === 'en' ? 'en-US' : 'id-ID';
                 
-                // Format Teks WhatsApp otomatis
-                const teksWA = encodeURIComponent(`Halo, saya tertarik dengan produk "${item.nama}" seharga ${hargaFormat}. Apakah masih tersedia?`);
-                const linkWA = `https://wa.me{item.kontak.trim()}?text=${teksWA}`;
+                const hargaFormat = new Intl.NumberFormat(localeFormat, { 
+                    style: 'currency', 
+                    currency: currencyFormat, 
+                    minimumFractionDigits: 0 
+                }).format(item.harga);
+                
+                // Formatting Teks WhatsApp
+                const textTemplate = dict[currentLang]["wa.text"]
+                    .replace("{nama}", item.nama)
+                    .replace("{harga}", hargaFormat);
+                
+                const teksWA = encodeURIComponent(textTemplate);
+                const linkWA = `https://wa.me/${item.kontak.trim()}?text=${teksWA}`;
 
                 const card = document.createElement("div");
                 card.className = "product-card";
                 card.innerHTML = `
                     <div class="img-container">
-                        <img class="product-img" src="${item.gambar}" alt="${item.nama}" onerror="this.src='https://placehold.co'">
+                        <img class="product-img" src="${item.gambar}" alt="${item.nama}" onerror="this.src='https://placehold.co/400x300?text=No+Image'">
                     </div>
                     <div class="product-info">
                         <div>
@@ -150,8 +338,8 @@
                             <div class="product-desc">${item.keterangan}</div>
                         </div>
                         <div>
-                            <span class="seller-badge">👤 Seller: ${item.penjual}</span>
-                            <a href="${linkWA}" target="_blank" class="btn-buy">💬 Hubungi Penjual</a>
+                            <span class="seller-badge">${dict[currentLang]["card.seller"]} ${item.penjual}</span>
+                            <a href="${linkWA}" target="_blank" class="btn-buy">${dict[currentLang]["card.buy"]}</a>
                         </div>
                     </div>
                 `;
@@ -159,7 +347,6 @@
             });
         }
 
-        // Fungsi Cari Barang secara Live/Real-time
         function filterProduk() {
             const keyword = document.getElementById("searchInput").value.toLowerCase();
             const hasilFilter = listSemuaProduk.filter(item => {
@@ -168,14 +355,18 @@
             tampilkanProduk(hasilFilter);
         }
 
-        // Jalankan pengambilan data secara otomatis saat web dibuka pertama kali
-        window.onload = muatDataProduk;
+        // INIT SAAT HALAMAN DIMUAT
+        window.onload = () => {
+            applyTheme('light');
+            applyLang('id');
+            muatDataProduk();
+        };
     </script>
 
-    <!-- Taruh ini di bagian paling bawah body index.html Anda -->
-<footer style="text-align: center; padding: 20px; color: #aaa; font-size: 12px;">
-    © 2026 Toko Bersama. 
-    <a href="login.html" style="color: #999; text-decoration: none; margin-left: 10px;">Masuk ke Portal Penjual</a>
-</footer>
+    <!-- FOOTER -->
+    <footer>
+        <span data-i18n="footer.copy">© 2026 Toko Bersama.</span> 
+        <a href="login.html" data-i18n="footer.portal">Masuk ke Portal Penjual</a>
+    </footer>
 </body>
 </html>
