@@ -27,7 +27,6 @@
     ⬅️ Kembali ke Beranda Toko
     </a>
 
-    
     <!-- ================= 1. FORM LOGIN PORTAL ================= -->
     <div id="loginSection" class="card">
         <h2>Login Portal</h2>
@@ -40,7 +39,7 @@
             <label>Password:</label>
             <input type="password" id="loginPass" placeholder="Password..." required>
         </div>
-        <button onclick="prosesLogin()">Masuk ke Sistem</button>
+        <button id="btnLogin" onclick="prosesLogin()">Masuk ke Sistem</button>
     </div>
 
     <!-- ================= 2. DASHBOARD SELLER & ADMIN (UNTUK UPLOAD) ================= -->
@@ -75,7 +74,7 @@
             <input type="file" id="prodFoto" accept="image/*" required>
         </div>
         <button id="btnPost" class="success-btn" onclick="prosesUploadProduk()">Terbitkan Produk</button>
-        <button class="danger-btn" onclick="logout()">Keluar / Logout</button>
+        <button class="danger-btn" style="margin-top: 15px;" onclick="logout()">Keluar / Logout</button>
     </div>
 
     <!-- ================= 3. PANEL KHUSUS ADMIN (MANAJEMEN SELLER) ================= -->
@@ -101,18 +100,18 @@
                 <option value="admin">Admin (Kontrol penuh sistem)</option>
             </select>
         </div>
-        <button onclick="adminTambahUser()">Daftarkan Akun Baru</button>
+        <button id="btnTambahUser" onclick="adminTambahUser()">Daftarkan Akun Baru</button>
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwkcXe_MqumlA1iPBsXY1gtiEg9I_o5nyRIqL2F5f_n1OkQfsUxNAZilArKWT_IZiBhMw/exec"; // <== GANTI DENGAN URL WEB APP APPS SCRIPT ANDA
+        // MASUKKAN URL WEB APP DARI GOOGLE APPS SCRIPT ANDA
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwkcXe_MqumlA1iPBsXY1gtiEg9I_o5nyRIqL2F5f_n1OkQfsUxNAZilArKWT_IZiBhMw/exec"; 
         
-        // State Penyimpanan Kredensial Sementara di Memori Browser (Aman)
         let sessionUser = "";
         let sessionPasswordHash = "";
         let sessionRole = "";
 
-        // Fungsi Enkripsi SHA-256 Sisi Klien
+        // Fungsi Enkripsi SHA-256 Sisi Klien (Output Huruf Kecil)
         async function hashPassword(password) {
             const msgBuffer = new TextEncoder().encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -126,10 +125,16 @@
             const pass = document.getElementById("loginPass").value;
             if(!user || !pass) return alert("Isi username dan password!");
 
+            const btn = document.getElementById("btnLogin");
+            btn.innerText = "Memverifikasi..."; btn.disabled = true;
+
             const hash = await hashPassword(pass);
             
+            // Menggunakan header text/plain untuk melewati proteksi CORS Preflight di beberapa browser
             fetch(WEB_APP_URL, {
                 method: "POST",
+                mode: "cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({ action: "login", username: user, passwordHash: hash })
             })
             .then(res => res.json())
@@ -137,15 +142,13 @@
                 if(data.status === "success") {
                     sessionUser = user;
                     sessionPasswordHash = hash;
-                    sessionRole = data.role;
+                    sessionRole = data.role.toLowerCase().trim();
                     
-                    // Alihkan Tampilan Layar
                     document.getElementById("loginSection").style.display = "none";
                     document.getElementById("dashboardSection").style.display = "block";
                     document.getElementById("displayUsername").innerText = sessionUser;
                     document.getElementById("userBadge").innerText = sessionRole.toUpperCase();
                     
-                    // Jika Admin, buka panel manajemen user
                     if(sessionRole === "admin") {
                         document.getElementById("adminSection").style.display = "block";
                     }
@@ -153,10 +156,16 @@
                     alert(data.message);
                 }
             })
-            .catch(err => alert("Gagal terhubung ke server Google."));
+            .catch(err => {
+                alert("Gagal memproses otentikasi ke sistem cloud Google.");
+                console.error(err);
+            })
+            .finally(() => {
+                btn.innerText = "Masuk ke Sistem"; btn.disabled = false;
+            });
         }
 
-        // Fungsi Kirim Produk Dagangan
+        // Fungsi Kirim Produk Dagangan ke Google Spreadsheet & Drive
         function prosesUploadProduk() {
             const fileInput = document.getElementById("prodFoto").files[0];
             if (!fileInput) return alert("Pilih foto produk dulu!");
@@ -179,7 +188,12 @@
                     imageName: fileInput.name
                 };
 
-                fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) })
+                fetch(WEB_APP_URL, { 
+                    method: "POST", 
+                    mode: "cors",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload) 
+                })
                 .then(res => res.json())
                 .then(data => {
                     alert(data.message);
@@ -190,30 +204,8 @@
                         document.getElementById("prodFoto").value = "";
                     }
                 })
+                .catch(err => alert("Gagal mengunggah produk."))
                 .finally(() => { btn.innerText = "Terbitkan Produk"; btn.disabled = false; });
             };
         }
 
-        // Fungsi Khusus Admin: Tambah Akun Baru
-        async function adminTambahUser() {
-            const newU = document.getElementById("newUsername").value;
-            const newP = document.getElementById("newPassword").value;
-            const newR = document.getElementById("newRole").value;
-            if(!newU || !newP) return alert("Lengkapi data user baru!");
-
-            const newHash = await hashPassword(newP);
-            const payload = {
-                action: "admin_add_seller",
-                username: sessionUser,
-                passwordHash: sessionPasswordHash,
-                newUsername: newU,
-                newPasswordHash: newHash,
-                newRole: newR
-            };
-
-            fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) })
-            .then(res => res.json())
-            .then(data => {
-                alert(data.message);
-                if(data.status === "success") {
-                    document.getElementById("newUsername").value = "";
