@@ -103,14 +103,13 @@
     </div>
 
     <script>
-        // TAUTAN TERKUNCI KE CLOUD BACKEND GOOGLE APPS SCRIPT
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzE1NlWWYa6Wlq7Gen4peO9KlFcNwBW5hu0BAV-w0JcFRcDuoXMTCauDwNsB-LxQEie/exec"; 
+        // GANTI TAUTAN INI DENGAN URL RE-DEPLOY TERBARU ANDA
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxKlZ2aBaBHu60HJO99eOpS1FJY26Y0dQNYtgqwK0RiG0EcXCZzpLsN0iHrGiniA0fLHg/exec"; 
         
         let sessionUser = "";
         let sessionPasswordHash = "";
         let sessionRole = "";
 
-        // Fungsi enkripsi password otomatis ke format SHA-256 huruf kecil
         async function hashPassword(password) {
             const msgBuffer = new TextEncoder().encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -118,7 +117,7 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
         }
 
-        // Jalankan Fitur Login Menggunakan FormData (Mencegah Modifikasi GET Browser)
+        // Login menggunakan text/plain murni (Taktik paling aman anti-blokir browser)
         async function prosesLogin() {
             const user = document.getElementById("loginUser").value;
             const pass = document.getElementById("loginPass").value;
@@ -128,20 +127,14 @@
             btn.innerText = "Memverifikasi..."; btn.disabled = true;
 
             const hash = await hashPassword(pass);
-            
-            const formData = new FormData();
-            formData.append("action", "login");
-            formData.append("username", user);
-            formData.append("passwordHash", hash);
+            const payload = { action: "login", username: user, passwordHash: hash };
 
             fetch(WEB_APP_URL, {
                 method: "POST",
-                body: formData
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(payload)
             })
-            .then(res => {
-                if (!res.ok) throw new Error("Server cloud tidak merespon secara valid.");
-                return res.json();
-            })
+            .then(res => res.json())
             .then(data => {
                 if(data.status === "success") {
                     sessionUser = user;
@@ -169,7 +162,6 @@
             });
         }
 
-        // Jalankan Fitur Posting Produk Baru
         function prosesUploadProduk() {
             const fileInput = document.getElementById("prodFoto").files[0];
             if (!fileInput) return alert("Pilih foto produk terlebih dahulu!");
@@ -180,20 +172,22 @@
             const reader = new FileReader();
             reader.readAsDataURL(fileInput);
             reader.onload = function () {
-                const payloadData = new FormData();
-                payloadData.append("action", "post_produk");
-                payloadData.append("username", sessionUser);
-                payloadData.append("passwordHash", sessionPasswordHash);
-                payloadData.append("nama", document.getElementById("prodNama").value);
-                payloadData.append("harga", document.getElementById("prodHarga").value);
-                payloadData.append("keterangan", document.getElementById("prodKeterangan").value);
-                payloadData.append("kontak", document.getElementById("prodKontak").value);
-                payloadData.append("image", reader.result); // Mengirim file gambar sebagai teks base64
-                payloadData.append("imageName", fileInput.name);
+                const payload = {
+                    action: "post_produk",
+                    username: sessionUser,
+                    passwordHash: sessionPasswordHash,
+                    nama: document.getElementById("prodNama").value,
+                    harga: document.getElementById("prodHarga").value,
+                    keterangan: document.getElementById("prodKeterangan").value,
+                    kontak: document.getElementById("prodKontak").value,
+                    image: reader.result,
+                    imageName: fileInput.name
+                };
 
                 fetch(WEB_APP_URL, { 
                     method: "POST", 
-                    body: payloadData 
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(payload)
                 })
                 .then(res => res.json())
                 .then(data => {
@@ -205,3 +199,11 @@
                         document.getElementById("prodFoto").value = "";
                     }
                 })
+                .catch(err => alert("Gagal mengunggah produk."))
+                .finally(() => { btn.innerText = "Terbitkan Produk"; btn.disabled = false; });
+            };
+        }
+
+        async function adminTambahUser() {
+            const newU = document.getElementById("newUsername").value;
+            const newP = document.getElementById("newPassword").value;
