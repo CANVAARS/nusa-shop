@@ -105,7 +105,7 @@
     </div>
 
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxbzGF9U0WCMw-gkeeE2Yiktbh_NbJEAAvFFWkIHfEnwgLStGiQz12doy1vqyo9mJt0YA/exec"; // <== GANTI DENGAN URL WEB APP APPS SCRIPT ANDA
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyFY0A5ihDhSbcFlzw014JnKZSqbsmb4_wQ85hDl-C8F9yYfVg7HwVr8ja-PzQcbs2nrg/exec"; // <== GANTI DENGAN URL WEB APP APPS SCRIPT ANDA
         
         // State Penyimpanan Kredensial Sementara di Memori Browser (Aman)
         let sessionUser = "";
@@ -117,7 +117,7 @@
             const msgBuffer = new TextEncoder().encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
             const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').toLowerCase();
         }
 
         // Fungsi Jalankan Login
