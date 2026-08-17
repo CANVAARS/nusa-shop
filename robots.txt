@@ -1,0 +1,63 @@
+# robots.txt - Standard SEO & AI Crawler Friendly Configuration
+
+# Allow all search engines and web crawlers by default
+User-agent: *
+Allow: /
+
+# Explicitly allow Googlebot & major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+# Explicitly allow AI Search & LLM Web Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: ByteSpider
+Allow: /
+
+# Disallow private/draft directories
+Disallow: /_drafts/
+Disallow: /.github/
+Disallow: /admin/
+
+# Sitemap links
+Sitemap: https://www.nusacoin.site/sitemap.xml
